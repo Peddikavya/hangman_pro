@@ -1,61 +1,62 @@
-const readline = require('readline');
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
 const flowers = ["rose", "lily", "tulip", "daisy", "sunflower", "orchid", "daffodil", "hydrangea", "jasmine", "carnation"];
 const randomFlower = flowers[Math.floor(Math.random() * flowers.length)];
 let guessedFlower = "_".repeat(randomFlower.length);
 const maxAttempts = 6;
 let attemptsLeft = maxAttempts;
 const guessedLetters = [];
-function checkGuess(letter) {
+
+document.getElementById("guessedFlower").textContent = guessedFlower;
+document.getElementById("attemptsLeft").textContent = attemptsLeft;
+
+function updateDisplay() {
+    document.getElementById("guessedFlower").textContent = guessedFlower;
+    document.getElementById("attemptsLeft").textContent = attemptsLeft;
+    document.getElementById("guessedLetters").textContent = guessedLetters.join(", ");
+}
+
+function makeGuess() {
+    const input = document.getElementById("guessInput");
+    const letter = input.value.toLowerCase();
+    input.value = "";
+
+    if (!/^[a-z]$/.test(letter)) {
+        alert("Please enter a single alphabet letter.");
+        return;
+    }
+
+    if (guessedLetters.includes(letter)) {
+        alert("You already guessed that letter.");
+        return;
+    }
+
+    guessedLetters.push(letter);
+
     if (randomFlower.includes(letter)) {
         for (let i = 0; i < randomFlower.length; i++) {
             if (randomFlower[i] === letter) {
                 guessedFlower = guessedFlower.substring(0, i) + letter + guessedFlower.substring(i + 1);
             }
         }
-        console.log("Correct guess! Guessed flower so far: " + guessedFlower);
+        document.getElementById("status").textContent = "Correct guess!";
     } else {
         attemptsLeft--;
-        console.log("Incorrect guess! Attempts left: " + attemptsLeft);
+        document.getElementById("status").textContent = "Incorrect guess!";
     }
-    guessedLetters.push(letter);
-    console.log("Guessed letters: " + guessedLetters.join(", "));
+
+    updateDisplay();
+    checkWin();
 }
+
 function checkWin() {
     if (guessedFlower === randomFlower) {
-        console.log("Congratulations! You've guessed the flower: " + randomFlower);
-        rl.close();
+        document.getElementById("status").textContent = "🎉 You guessed the flower: " + randomFlower;
+        disableInput();
     } else if (attemptsLeft === 0) {
-        console.log("Sorry, you've run out of attempts. The flower was: " + randomFlower);
-        rl.close();
+        document.getElementById("status").textContent = "😞 You lost! The flower was: " + randomFlower;
+        disableInput();
     }
 }
 
-function playGame() {
-    console.log("Welcome to Hangman - Flower Edition!");
-    console.log("Try to guess the flower name. You have " + maxAttempts + " attempts.");
-    console.log("Guessed flower so far: " + guessedFlower);
-
-    rl.on('line', (input) => {
-        if (attemptsLeft > 0) {
-            const guess = input.trim().toLowerCase();
-
-            if (guess.length !== 1 || !/[a-z]/.test(guess)) {
-                console.log("Please enter a single letter.");
-                return;
-            }
-
-            if (guessedLetters.includes(guess)) {
-                console.log("You've already guessed that letter.");
-                return;
-            }
-
-            checkGuess(guess);
-            checkWin();
-        }
-    });
+function disableInput() {
+    document.getElementById("guessInput").disabled = true;
 }
-playGame();
