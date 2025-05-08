@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hangman</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f8f8f8; }
+        #guessInput { width: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Hangman</h1>
+    <p id="status"></p>
+    <p>Guessed Flower: <span id="guessedFlower"></span></p>
+    <p>Attempts Left: <span id="attemptsLeft"></span></p>
+    <p>Guessed Letters: <span id="guessedLetters"></span></p>
+    <input type="text" id="guessInput" maxlength="1">
+    <button onclick="makeGuess()">Guess</button>
+
+    <script src="hangman.js"></script>
+</body>
+</html>
